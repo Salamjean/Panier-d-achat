@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        class Produit {
+  constructor(id, nom, prix) {
+    this.id = id;
+    this.nom = nom;
+    this.prix = prix;
+  }
+}
+
+class ElementPanier {
+  constructor(produit, quantite) {
+    this.produit = produit;
+    this.quantite = quantite;
+  }
+
+  calculerPrixTotal() {
+    return this.produit.prix * this.quantite;
+  }
+}
+
+class Panier {
+  constructor() {
+    this.elements = [];
+  }
+
+  obtenirTotalElements() {
+    return this.elements.reduce((total, element) => total + element.quantite, 0);
+  }
+
+  ajouterElement(produit, quantite) {
+    const elementExistant = this.elements.find(element => element.produit.id === produit.id);
+
+    if (elementExistant) {
+      elementExistant.quantite += quantite;
+    } else {
+      const nouvelElement = new ElementPanier(produit, quantite);
+      this.elements.push(nouvelElement);
+    }
+  }
+
+  supprimerElement(produitId) {
+    this.elements = this.elements.filter(element => element.produit.id !== produitId);
+  }
+
+  afficherPanier() {
+    if (this.elements.length === 0) {
+      console.log("Le panier est vide.");
+      return;
+    }
+
+    console.log("Contenu du panier:");
+    this.elements.forEach(element => {
+      console.log(
+        `- ${element.produit.nom} (ID: ${element.produit.id}), Quantité: ${element.quantite}, Prix unitaire: ${element.produit.prix}, Prix total: ${element.calculerPrixTotal()}`
+      );
+    });
+
+    console.log(`Total des éléments: ${this.obtenirTotalElements()}`);
+  }
+
+  calculerMontantTotal() {
+    return this.elements.reduce((total, element) => total + element.calculerPrixTotal(), 0);
+  }
+}
+
+
+const produit1 = new Produit(1, "T-shirt", 20);
+const produit2 = new Produit(2, "Pantalon", 50);
+const produit3 = new Produit(3, "Chaussures", 80);
+
+const panier = new Panier();
+
+panier.ajouterElement(produit1, 2);
+panier.ajouterElement(produit2, 1);
+panier.ajouterElement(produit3, 1);
+
+panier.afficherPanier();
+console.log("Montant total du panier: ", panier.calculerMontantTotal());
+
+panier.supprimerElement(produit2.id);
+
+console.log("\nAprès suppression du pantalon:");
+panier.afficherPanier();
+console.log("Montant total du panier: ", panier.calculerMontantTotal());
+    </script>
+</body>
+</html>
